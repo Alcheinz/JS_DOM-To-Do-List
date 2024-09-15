@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS To-Do List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<style>
+    h1 {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+<body class="dark:bg-slate-200">
+    <h1 class="text-5xl my-10 text-center">To-Do List</h1>
+    <div class="container mx-auto w-1/2 text-center">
+        <form>
+            <div class="border flex border-green-500">
+                <input 
+                id="todo-input" 
+                placeholder="Bir şeyler yaz..." 
+                type="text" class="w-full p-3 relative z-90">
+                <button  
+                type="submit" 
+                class="border-1 px-6 bg-green-500 text-white hover:bg-green-700" 
+                id="add-todo">Ekle</button>
+            </div>
+        </form>
+    <div class="flex justify-end my-5">
+        <button 
+        class="bg-red-500 text-white px-3 py-3 hover:bg-red-700" 
+        id="clear">
+        Temizle
+    </button>
+    </div>
+        <ul 
+        class="border p-6 flex flex-col gap-y-4 border-black" 
+        id="todos">
+            <!-- <li 
+            class="flex justify-between border px-4 py-3 flex items-center justify-between">
+                <span>ToDo Name</span>
+                <button 
+                class="text-red-500 hover:text-red-700">Sil</button>
+            </li> -->
+        </ul>
+</div>
+        <script>
+            const textInputDOM = document.getElementById("todo-input");
+            const btnAddTodoDOM = document.getElementById("add-todo");
+            const todosDOM = document.querySelector("#todos");
+            const btnClearDOM = document.querySelector("#clear");
+
+            let textInputValue = "";
+            let todos = [];
+
+            textInputDOM.addEventListener("input", function (event) {
+                textInputValue = event.target.value;
+                textInputDOM.value = capitalizeFirstLetter(textInputValue);
+            });
+
+            btnAddTodoDOM.addEventListener("click", addTodo);
+            btnClearDOM.addEventListener("click", clearTodos);
+
+            function addTodo(e) {
+                e.preventDefault();
+                todos.unshift({ id: todos.length + 1, todoTitle: textInputValue });
+                textInputDOM.value = "";
+                displayTodos();
+            }
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            function displayTodos() {
+                let result = "";
+
+                if (todos.length === 0) {
+                    todosDOM.innerHTML = "Listen Boş!";
+                } else {
+                    todos.forEach((item) => {
+                        result += `
+                        <li
+                        class="flex justify-between border px-4 py-3 flex items-center justify-between border-s-red-500"
+                        >
+                        <span>${item.todoTitle}</span>
+                        <button class="text-red-400" onclick="deleteTodo(${item.id})">Sil</button>
+                        </li>
+                        `;
+                    });
+
+                    todosDOM.innerHTML = result;
+                }
+            }
+
+            function deleteTodo(id) {
+                let deletedId;
+
+                for (let index in todos) {
+                    if (todos[index].id == id) {
+                        deletedId = index;
+                    }
+                }
+
+                todos.splice(deletedId, 1);
+                displayTodos();
+            }
+
+            function clearTodos() {
+                todos.splice(0, todos.length);
+                displayTodos();
+            }
+
+            displayTodos();
+        </script>
+        <p class="fixed inset-x-0 bottom-0 text-center">Alcheinz</p>
+</body>
+</html>
